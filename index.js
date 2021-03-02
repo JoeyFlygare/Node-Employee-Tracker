@@ -5,13 +5,10 @@ require("console.table");
 var connection = mysql.createConnection({
   host: "localhost",
 
-  // Your port; if not 3306
   port: 3306,
 
-  // Your username
   user: "root",
 
-  // Your password
   password: "password",
   database: "employeeTracker_db",
 });
@@ -22,8 +19,7 @@ connection.connect(function (err) {
   mainMenu();
 });
 
-//START
-function mainMenu() {
+function main() {
   inquirer
     .prompt([
       {
@@ -53,11 +49,11 @@ function mainMenu() {
                 throw err;
               }
               console.table(data);
-              mainMenu();
+              main();
             }
           );
           break;
-        //this case adds an employee to the database
+        
         case "Add Employee":
           inquirer
             .prompt([
@@ -65,19 +61,19 @@ function mainMenu() {
                 name: "firstName",
                 type: "input",
                 message:
-                  "What is the first name of the employee you'd like to add?",
+                  "What is the first name the new employee?",
               },
               {
                 name: "lastName",
                 type: "input",
                 message:
-                  "What is the last name of the employee you'd like to add?",
+                  "What is the last name of the new employee?",
               },
               {
                 name: "roleID",
                 type: "input",
                 message:
-                  "What is the ID of their new role? Use numeric role IDs",
+                  "What is there ID number?",
               },
             ])
             .then(function (response) {
@@ -93,13 +89,12 @@ function mainMenu() {
                     throw err;
                   }
                   console.log("New Employee Added!");
-                  mainMenu();
+                  main();
                 }
               );
             });
           break;
 
-        // this case views all roles
         case "View All Roles":
           connection.query(
             `SELECT role.id, role.title, role.salary, department.department_name AS department FROM role LEFT JOIN department ON role.department_id = department.id ORDER BY role.title`,
@@ -108,29 +103,28 @@ function mainMenu() {
                 throw err;
               }
               console.table(data);
-              mainMenu();
+              main();
             }
           );
           break;
 
-        // this case adds a role
         case "Add Role":
           inquirer
             .prompt([
               {
                 name: "title",
                 type: "input",
-                message: "What is the title for this role?",
+                message: "Role title?",
               },
               {
                 name: "salary",
                 type: "input",
-                message: "What is salary for this role?",
+                message: "Salary?",
               },
               {
                 name: "departmentID",
                 type: "input",
-                message: "What is the department ID for this role?",
+                message: "Department ID?",
               },
             ])
             .then(function (response) {
@@ -146,24 +140,22 @@ function mainMenu() {
                     throw err;
                   }
                   console.log("New Role Added!");
-                  mainMenu();
+                  main();
                 }
               );
             });
           break;
 
-        // this case views all departments
         case "View All Departments":
           connection.query("SELECT * FROM department", function (err, data) {
             if (err) {
               throw err;
             }
             console.table(data);
-            mainMenu();
+            main();
           });
           break;
 
-        //this case adds an department
         case "Add Department":
           inquirer
             .prompt([
@@ -171,7 +163,7 @@ function mainMenu() {
                 name: "name",
                 type: "input",
                 message:
-                  "What is the name of the department you would like to add?",
+                  "What is the name of the department?",
               },
             ])
             .then(function (response) {
@@ -183,13 +175,12 @@ function mainMenu() {
                     throw err;
                   }
                   console.log("Department successfully added!");
-                  mainMenu();
+                  main();
                 }
               );
             });
           break;
 
-        //this case updates an employee role
         case "Update Employee Role":
           inquirer
             .prompt([
@@ -202,7 +193,7 @@ function mainMenu() {
                 name: "newRole",
                 type: "input",
                 message:
-                  "What is the title of their new role? Use numeric role IDs",
+                  "What is the title of their new role?",
               },
             ])
             .then(function (response) {
@@ -214,13 +205,12 @@ function mainMenu() {
                     throw err;
                   }
                   console.log("Employee Role Successfully Updated!");
-                  mainMenu();
+                  main();
                 }
               );
             });
           break;
 
-        //this case quits the program and ends the connection
         case "Quit":
           connection.end();
           break;
